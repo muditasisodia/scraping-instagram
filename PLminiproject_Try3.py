@@ -23,60 +23,46 @@ class mainWindow:
         self.outputFrame.grid(row=2)
 
         #Contents
-        l1=Label(inputFrame, text="Enter username: ")
+        li=Label(inputFrame, text="Enter username: ")
         self.username=Entry(inputFrame)
-        
-
+        self.opString=StringVar()
+        self.opString.set("Output will display here")
+        lo=Label(self.outputFrame, textvariable= self.opString)
 
         #Adding Buttons
-        b1=Button(buttonFrame, text="No. of followers", command=lambda: self.cookSoup(1))
-        b3=Button(buttonFrame, text="Details of picture", command=self.likes_window)
-        b4=Button(buttonFrame, text="No. of following", command=lambda: self.cookSoup(4))
-        b5=Button(buttonFrame, text="No. of posts", command=lambda: self.cookSoup(5))
-        b6=Button(buttonFrame, text="Download Images", command=self.create_window)
-        l1.grid(row=0)
+        b1=Button(buttonFrame, text="User Details", command=self.cookSoup, width=15)
+        b3 = Button(buttonFrame, text="Image Details", command=self.likes_window, width=15)
+        b6 = Button(buttonFrame, text="Download Images", command=self.create_window, width=15)
+        li.grid(row=0)
         self.username.grid(row=0, column=1)
-        b1.grid(row=0)
-        b3.grid(row=2, column=0)
-        b4.grid(row=0, column=1)
-        b5.grid(row=1, column=1)
-        b6.grid(row=2, column=1)
+        b1.grid(row=1, columnspan=2)
+        b3.grid(row=2, columnspan=2)
+        b6.grid(row=3, columnspan=2)
+        lo.grid(row=4, columnspan=2)
 
-    def cookSoup(self, choice):
+    def cookSoup(self):
         
         #Cooking soup
         self.user=self.username.get()
         
-        
-        chrome_path=r"G:\chromedriver_win32\chromedriver.exe"
+        chrome_path = r"C:\webdrivers\chromedriver.exe"
         driver=webdriver.Chrome(chrome_path)
         driver.get("https://www.instagram.com/"+self.user+"/")
         
         self.soup=BeautifulSoup(driver.page_source, 'lxml')
         items=self.soup.find_all('span', class_='_fd86t')
 
-        if(choice==1):
-            op=Label(self.outputFrame, text="No. of followers: "+items[1].text)
-            op.grid(row=0)
-
-        elif(choice==4):
-            op=Label(self.outputFrame, text="No. of following: "+items[2].text)
-            op.grid(row=0)
-
-        elif(choice==5):
-            op=Label(self.outputFrame, text="No. of posts: "+items[0].text)
-            op.grid(row=0)
-        elif(choice==3):
-            likes()
+        self.opString.set("No. of followers: "+items[1].text+"\nNo. of following: "+items[2].text+"\nNo. of posts: "+items[0].text)
 
     def likes(self):
-        chrome_path=r"G:\chromedriver_win32\chromedriver.exe"
+        chrome_path = r"C:\webdrivers\chromedriver.exe"
         driver=webdriver.Chrome(chrome_path)
         
         driver.get(self.giveURL.get())
         soup=BeautifulSoup(driver.page_source, 'lxml')
 
         likes = soup.find_all('span', class_="_nzn1h")
+        
         l4=Label(self.statusFrame, text='No. of likes: '+likes[0].text)
         l4.grid(row=0)
 
@@ -122,7 +108,7 @@ class mainWindow:
         self.statusFrame.grid(row=2, columnspan=2)
 
     def downimg(self):
-        chrome_path=r"G:\chromedriver_win32\chromedriver.exe"
+        chrome_path=r"C:\webdrivers\chromedriver.exe"
         driver=webdriver.Chrome(chrome_path)
         
         driver.get(self.giveURL.get())
